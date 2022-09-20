@@ -29,7 +29,7 @@ app.get("/api/notes", (req, res) => {
 });
 
 app.post("/api/notes", (req, res) => {
-    const {title, text, id} = req.body;
+    const {title, text} = req.body;
     if (req.body) {
         const newNote = {
             title,
@@ -37,15 +37,30 @@ app.post("/api/notes", (req, res) => {
             "id": uuidv4(),
         };
         fs.readFile("./db/db.json", "utf-8", (err, data) => {
+            if (err) console.log(err) ;
             const currentFile = JSON.parse(data);
             currentFile.push(newNote);
-            console.log(currentFile)
             fs.writeFile("./db/db.json", JSON.stringify(currentFile), (data) => res.send(JSON.parse(data)));
         });
         
     } else {
         console.log(err);
     }
+});
+
+app.delete("/api/notes/:id", (req, res) => {
+    console.log("deleting")
+    const deleteID = req.params.id;    
+    fs.readFile("./db/db.json", "utf-8", (err, data) => {
+        if (err) console.log(err) ;
+        const currentFile = JSON.parse(data);
+        currentFile.forEach(element => {
+            if (deleteID === element.id) {
+                currentFile.pop(element);
+                fs.writeFile("./db/db.json", JSON.stringify(currentFile), (data) => res.send(JSON.parse(data)));
+            }
+        });
+    });
 });
 
 // Wildcard route
