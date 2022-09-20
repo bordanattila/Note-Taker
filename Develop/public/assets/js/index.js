@@ -1,5 +1,3 @@
-const { response } = require("express");
-
 let noteTitle;
 let noteText;
 let saveNoteBtn;
@@ -32,12 +30,7 @@ const getNotes = () =>
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-    },
-  })
-  .then((response) => response.json())
-  .then((data) => data)
-  .catch((error) => {
-    console.error('Error:', error);
+    }
   });
 
 const saveNote = (note) =>
