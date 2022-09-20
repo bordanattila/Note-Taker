@@ -38,9 +38,18 @@ app.post("/api/notes", (req, res) => {
         };
         fs.readFile("./db/db.json", "utf-8", (err, data) => {
             if (err) console.log(err) ;
-            const currentFile = JSON.parse(data);
-            currentFile.push(newNote);
-            fs.writeFile("./db/db.json", JSON.stringify(currentFile), (data) => res.send(JSON.parse(data)));
+            try{
+                const currentFile = JSON.parse(data);
+                currentFile.push(newNote);
+                fs.writeFile("./db/db.json", JSON.stringify(currentFile), (data) => res.send(JSON.parse(data)));
+            } catch (error) {
+                const newNote = [{                    
+                    "title": req.body.title,
+                    "text": req.body.text,
+                    "id": uuidv4(),                    
+                }];
+                fs.writeFile("./db/db.json", JSON.parse(newNote), (data) => res.send(JSON.parse(data)));
+            };
         });
         
     } else {
