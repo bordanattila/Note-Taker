@@ -1,36 +1,14 @@
-const express = require("express");
+const apiroutes = require("express").Router();
 const fs = require("fs");
-const path = require("path");
 const { v4: uuidv4 } = require('uuid');
-// const apiroutes = ("./routes/index.js")
-
-const PORT = process.env.PORT || 3001;
-
-const app = express();
-
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }));
-// app.use("/api", apiroutes)
-app.use(express.static("public"));
-
-// Homepage route
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "/public/index.html"));
-
-});
-
-// Notes route
-app.get("/notes", (req, res) => {
-    res.sendFile(path.join(__dirname, "/public/notes.html"));
-});
 
 // API routes
-app.get("/api/notes", (req, res) => {
+apiroutes.get("notes", (req, res) => {
     fs.readFile("./db/db.json", "utf-8", (err, data) =>
     err ? console.log(err) : res.send(data));
-});
-
-app.post("/api/notes", (req, res) => {
+  });
+  
+  apiroutes.post("notes", (req, res) => {
     const {title, text} = req.body;
     if (req.body) {
         const newNote = {
@@ -57,9 +35,9 @@ app.post("/api/notes", (req, res) => {
     } else {
         console.log(err);
     }
-});
-
-app.delete("/api/notes/:id", (req, res) => {
+  });
+  
+  apiroutes.delete("/notes/:id", (req, res) => {
     console.log("deleting")
     const deleteID = req.params.id;    
     fs.readFile("./db/db.json", "utf-8", (err, data) => {
@@ -72,12 +50,7 @@ app.delete("/api/notes/:id", (req, res) => {
             }
         });
     });
-});
+  });
 
-// Wildcard route
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "/public/index.html"))
-});
-
-
-app.listen(PORT, () => { console.log(`Server listening at port http://localhost:${PORT}`) })
+  module.exports = apiroutes;
+  
