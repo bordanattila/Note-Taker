@@ -2,7 +2,7 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const { v4: uuidv4 } = require('uuid');
-// const apiroutes = ("./routes/index.js")
+const apiroutes = require("./routes/apiroutes.js")
 
 const PORT = process.env.PORT || 3001;
 
@@ -10,8 +10,8 @@ const app = express();
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
-// app.use("/api", apiroutes)
 app.use(express.static("public"));
+app.use("/api", apiroutes)
 
 // Homepage route
 app.get("/", (req, res) => {
@@ -22,56 +22,6 @@ app.get("/", (req, res) => {
 // Notes route
 app.get("/notes", (req, res) => {
     res.sendFile(path.join(__dirname, "/public/notes.html"));
-});
-
-// API routes
-app.get("/api/notes", (req, res) => {
-    fs.readFile("./db/db.json", "utf-8", (err, data) =>
-    err ? console.log(err) : res.send(data));
-});
-
-app.post("/api/notes", (req, res) => {
-    const {title, text} = req.body;
-    if (req.body) {
-        const newNote = {
-            title,
-            text,
-            "id": uuidv4(),
-        };
-        fs.readFile("./db/db.json", "utf-8", (err, data) => {
-            if (err) console.log(err) ;
-            try{
-                const currentFile = JSON.parse(data);
-                currentFile.push(newNote);
-                fs.writeFile("./db/db.json", JSON.stringify(currentFile), (data) => res.send(JSON.parse(data)));
-            } catch (error) {
-                const newNote = [{                    
-                    "title": req.body.title,
-                    "text": req.body.text,
-                    "id": uuidv4(),                    
-                }];
-                fs.writeFile("./db/db.json", JSON.stringify(newNote), (data) => res.send(JSON.parse(data)));
-            };
-        });
-        
-    } else {
-        console.log(err);
-    }
-});
-
-app.delete("/api/notes/:id", (req, res) => {
-    console.log("deleting")
-    const deleteID = req.params.id;    
-    fs.readFile("./db/db.json", "utf-8", (err, data) => {
-        if (err) console.log(err) ;
-        const currentFile = JSON.parse(data);
-        currentFile.forEach(element => {
-            if (deleteID === element.id) {
-                currentFile.pop(element);
-                fs.writeFile("./db/db.json", JSON.stringify(currentFile), (data) => res.send(JSON.parse(data)));
-            }
-        });
-    });
 });
 
 // Wildcard route
