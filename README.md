@@ -10,8 +10,8 @@ While building the application I was able to gain a deeper understanding of modu
 
 ## Usage
 
-![alt text](/assets/notespage.png)
-![alt text](/assets/notespage2.png)
+![alt text](/Assets/notespage.png)
+![alt text](/Assets/notespage2.png)
 
 [Heroku Link](https://morning-taiga-59903.herokuapp.com/)
 
